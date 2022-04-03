@@ -9,7 +9,8 @@ import 'package:happycamper/models/tag.dart';
 import 'package:hive/hive.dart';
 
 /// Will manage the Hive DB stuff as well as the get() middleware.
-/// Will not contain any of the data retreival logic, that will go in HappyCamper.
+/// Will not contain any of the data retreival logic, that will go in bandcampapi.dart
+/// TODO: Append a "Retrieved Date" to every request and delete+refetch cache objects if they're too old.
 
 /// A combination of AlbumsPages can be derived by hitting getCacheOnly() with the given tags until null is returned.
 /// The last albumpage prior to the null will be checked to see if it has more_available set to true.
@@ -20,8 +21,8 @@ class Cache {
   late LazyBox _cache;
   late String boxName;
 
-  Cache(this.boxName) {
-    Hive.init(Directory.current.path);
+  Cache(this.boxName, String directory) {
+    Hive.init(directory);
     Hive.registerAdapter(AlbumAdapter());
     Hive.registerAdapter(AlbumsPageAdapter());
     Hive.registerAdapter(TagAdapter());

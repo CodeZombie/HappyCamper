@@ -10,7 +10,11 @@ import 'package:happycamper/models/album.dart';
 import 'package:happycamper/bandcampapi.dart' as bandcamp_api;
 
 class HappyCamper {
-  Cache cache = Cache("happycamper");
+  late Cache cache;
+
+  HappyCamper(String destination){
+    cache = Cache("happycamper", destination);
+  }
 
   Future<Track> getRandomTrack(List<String> tags) async {
     AlbumsPage page = await cache.get(bandcamp_api.getAlbumsPage, [tags, 1]);

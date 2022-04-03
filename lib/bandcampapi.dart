@@ -37,7 +37,13 @@ Future<TagSearchResult> getTags(String searchTerm) async {
 /// Throws a [Exception] if there is a network error, or the server returns unexpected data.
 /// Throws a [FormatException] if the data returned by the server is not in the expected format.
 Future<TagSearchResult> getSimilarTags(String searchTerm) async {
-  http.Response response = await http.post(Uri.parse('https://bandcamp.com/tag/$searchTerm'));
+  
+  /*List<Tag> temp_tags = [];
+  temp_tags.add(Tag("Sick tag", "nrml_sick_tag"));
+  temp_tags.add(Tag("Another tag", "anthr_tag"));
+  return TagSearchResult(searchTerm, temp_tags);*/
+
+  http.Response response = await http.post(Uri.parse('https://bandcamp.com/tag/$searchTerm')).timeout(const Duration(seconds: 5));
   if (response.statusCode != 200) {
     throw Exception("BandcampAPI.getSimilarTags($searchTerm) invalid HTTP response code: ${response.statusCode}");
   }
