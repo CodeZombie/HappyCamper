@@ -21,6 +21,7 @@ class HappyCamper {
   }
 
   Future<List<Tag>> getTags(String searchTerm) async {
+    if (!isInitialized()) initialize();
     if (!isInitialized()) throw Exception("HappyCamper.getTags() Error: HappyCamper not initialized.");
 
     TagSearchResults? tagSearchResults = await TagSearchResults.get(database!, rateLimiter!, searchTerm);
