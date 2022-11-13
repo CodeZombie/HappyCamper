@@ -17,7 +17,7 @@ main() {
     print("Stacktrace: ");
     print(stackTrace);
   });*/
-  var hc = HappyCamper();
+  // var hc = HappyCamper("");
   /*hc.getRandomTrack([""]).then((value) {
     print(value.toString());
   }).onError((error, stackTrace) {
@@ -26,11 +26,11 @@ main() {
     print(stackTrace);
   });*/
 
-  hc.getSimilarTags("funk").then((value) {
-    print(value.toString());
-  }).onError((error, stackTrace) {
-    print(error);
-    print("Stacktrace: ");
-    print(stackTrace);
-  });
+  // hc.getSimilarTags("funk").then((value) {
+  //   print(value.toString());
+  // }).onError((error, stackTrace) {
+  //   print(error);
+  //   print("Stacktrace: ");
+  //   print(stackTrace);
+  // });
 }

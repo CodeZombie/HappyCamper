@@ -1,29 +1,36 @@
-library happycamper;
-
-import 'dart:math';
-
-import 'package:happycamper/cache.dart';
-import 'package:happycamper/models/tagsearchresult.dart';
-import 'package:happycamper/models/track.dart';
-import 'package:happycamper/models/albumspage.dart';
-import 'package:happycamper/models/album.dart';
-import 'package:happycamper/bandcampapi.dart' as bandcamp_api;
+import 'package:happycamper/new_models/album.dart';
+import 'package:happycamper/new_models/albums.dart';
+import 'package:happycamper/new_models/tag.dart';
+import 'package:happycamper/new_models/tagsearchresults.dart';
+import 'package:happycamper/new_models/track.dart';
+import 'package:happycamper/ratelimiter.dart';
+import 'package:isar/isar.dart';
 
 class HappyCamper {
-  late Cache cache;
+  Isar? database;
+  RateLimiter? rateLimiter;
 
-  HappyCamper(String destination){
-    cache = Cache("happycamper", destination);
+  bool isInitialized() {
+    if (rateLimiter == null || database == null) return false;
+    return true;
   }
 
-  Future<Track> getRandomTrack(List<String> tags) async {
-    AlbumsPage page = await cache.get(bandcamp_api.getAlbumsPage, [tags, 1]);
-    int albumId = page.albumIds[Random().nextInt(page.albumIds.length)];
-    Album album = await cache.get(bandcamp_api.getAlbumInformation, [albumId]);
-    return album.getRandomTrack();
+  Future<void> initialize() async {
+    database = await Isar.open([AlbumSchema, AlbumsSchema, TagSchema, TagSearchResultsSchema, TrackSchema]);
+    rateLimiter = RateLimiter();
   }
 
-  Future<TagSearchResult> getSimilarTags(String searchTerm) async {
-    return await cache.get(bandcamp_api.getSimilarTags, [searchTerm]);
+  Future<List<Tag>> getTags(String searchTerm) async {
+    if (!isInitialized()) throw Exception("HappyCamper.getTags() Error: HappyCamper not initialized.");
+
+    TagSearchResults? tagSearchResults = await TagSearchResults.get(database!, rateLimiter!, searchTerm);
+    if (tagSearchResults == null) return [];
+
+    List<Tag> tags = [];
+    for (int tagId in tagSearchResults.tagIds) {
+      Tag? tag = await Tag.get(database!, rateLimiter!, tagId);
+      if (tag != null) tags.add(tag);
+    }
+    return tags;
   }
 }

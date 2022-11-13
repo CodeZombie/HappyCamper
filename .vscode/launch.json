@@ -7,7 +7,7 @@
         {
             "name": "happycamper",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         },
         {
             "name": "happycamper (profile mode)",
